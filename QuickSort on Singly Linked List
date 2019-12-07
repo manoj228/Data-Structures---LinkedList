@@ -1,0 +1,140 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node
+{
+    int data;
+    struct node *link ;
+};
+
+void push(struct node **p,int data)
+{
+    struct node *temp = (struct node *) malloc (sizeof(struct node));
+    
+    temp -> data = data;
+    
+    temp -> link = *p;
+    
+    *p = temp;
+    
+}
+
+void display(struct node *t)
+{
+    while(t)
+    {
+        printf("%d ",t->data);
+        t = t->link;
+    }
+}
+
+struct node *partition (struct node *start , struct node *end ,
+                       struct node **newhead , struct node **newend)
+{
+   struct node *pivot = end ;
+   struct node *prev = NULL , *curr = start , *tail = pivot;
+   
+   while(curr != pivot)
+   {
+       if(curr -> data < pivot -> data)
+       {
+           // if its a starting node
+           if((*newhead) == NULL)
+           (*newhead) = curr;
+           
+           prev = curr;
+           curr = curr -> link;
+       }
+       else
+       {
+           // if node data is greater than pivot then move that data after to trail
+           if(prev)
+           prev -> link = curr -> link;
+           
+           struct node *temp = curr -> link;
+           curr -> link = NULL;
+           tail -> link = curr;
+           tail = curr;
+           curr = temp;
+       }
+   }
+   
+   //pivot becomes newhead
+   if((*newhead) == NULL)
+   (*newhead) = pivot;
+   
+   (*newend) = tail;
+   
+   return pivot;
+           
+}
+
+struct node *getTail(struct node *t)
+{
+  while(t->link != NULL && t!=NULL)
+  t = t->link;
+  
+  return t;
+}
+
+struct node *qsortRec(struct node *start , struct node *end)
+{
+       // Base cases
+    if(start == end)
+    return start;
+    
+    struct node *newhead = NULL, *newend = NULL;
+    
+    struct node *pivot = partition(start,end,&newhead,&newend);
+    
+    //if pivot is smallest element , then no need for left recursion
+    if(newhead != pivot)
+    {
+        struct node *temp = newhead;
+        
+        while(temp->link != pivot)
+        temp = temp -> link;
+        temp -> link = NULL;
+        
+        // Recursion for left half of pivot
+        newhead = qsortRec(newhead , temp);
+        
+        //change the left half of last node link to pivot
+        temp = getTail(newhead);
+        temp -> link = pivot;
+    }
+    
+    //Recursion for right half of the pivot
+    pivot -> link = qsortRec(pivot->link , newend);
+    
+    return newhead;
+    
+}
+
+void quicksort(struct node **p)
+{
+    *p = qsortRec(*p , getTail(*p));
+    return ;
+}
+
+int main()
+{
+   struct node *a =NULL;
+   
+   push(&a,20);
+   push(&a,40);
+   push(&a,10);
+   push(&a,50);
+   push(&a,30);
+   
+   display(a); 
+   
+   printf("\n");
+   
+   quicksort(&a);
+   
+   display(a);  
+   
+    return 0;
+}
