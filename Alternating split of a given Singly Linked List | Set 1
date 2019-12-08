@@ -1,0 +1,78 @@
+//Alternate Split
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node
+{
+    int data;
+    struct node *link;
+};
+
+void push(struct node **p,int data)
+{
+    struct node *temp = (struct node *)malloc (sizeof(struct node));
+    temp -> data = data;
+    temp -> link = (*p);
+    (*p) = temp;
+}
+
+void display(struct node *t)
+{
+    while(t)
+    {
+        printf("%d ",t->data);
+        t = t->link;
+    }
+}
+
+void alternateSplit(struct node *p,struct node **a,struct node **b)
+{
+struct node *s1=p , *s2=p->link;
+
+if(p->link == NULL)
+*a = p;
+
+ while(s1!= NULL && s2!=NULL)
+ {
+    if(*a == NULL) *a = s1;
+    
+    if(*b == NULL) *b= s2;
+    
+    s1 -> link = s2->link;
+    
+    if(s2->link != NULL)
+    s2-> link = s2->link->link;
+    
+    s1 = s1 -> link;
+    s2 = s2 -> link;
+ }
+ 
+
+}
+
+int main()
+{
+    struct node *a=NULL , *f = NULL , *s = NULL;
+    
+    push(&a,5);
+    push(&a,4);
+    push(&a,3);
+    push(&a,2);
+    push(&a,1);
+    
+    display(a);
+  
+    alternateSplit(a,&f,&s);
+     
+    printf("\n");
+      
+    display(f);
+    
+    printf("\n");
+   
+    display(s);
+    
+    
+    
+    return 0;
+}
