@@ -1,0 +1,67 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node
+{
+    int data;
+    struct node *link;
+};
+
+void push(struct node **s,int data)
+{
+ struct node *temp = (struct node *)malloc(sizeof(struct node));
+ temp ->data = data;
+ temp ->link = *s;
+ *s = temp;
+
+}
+void display(struct node* root)
+{
+    struct node *p=root;
+    while(p)
+    {
+        printf("%d ",p->data);
+        p = p->link;
+    }
+}
+
+struct node* pairwiseSwap(struct node *s)
+{
+    if(s==NULL || s->link == NULL)
+    return s;
+    
+    //store next head
+    struct node *remaining = s -> link -> link;
+    
+    //store new head 
+    struct node *newhead = s -> link ;
+    
+    // head of next node
+    s->link->link = s;
+    
+    //recursion 
+    s -> link = pairwiseSwap(remaining);
+    
+    return newhead;
+}
+int main()
+{
+    struct node *start = NULL;
+    
+    push(&start, 7); 
+    push(&start, 6); 
+    push(&start, 5); 
+    push(&start, 4); 
+    push(&start, 3); 
+    push(&start, 2); 
+    push(&start, 1); 
+    
+    display(start);
+    
+    start = pairwiseSwap(start);
+    
+    display(start);
+    
+    return 0;
+}
