@@ -1,0 +1,57 @@
+
+#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
+
+struct node
+{
+    int data;
+    struct node *link;
+};
+
+
+void push(struct node **p,int data)
+{
+    struct node *temp = (struct node *)malloc(sizeof(struct node));
+    temp -> data = data; 
+    temp -> link = *p;
+    *p = temp;
+}
+
+void Printrandom(struct node *p)
+{
+    if(p==NULL)
+    return ;
+    
+    //for getting different seed value , so we cannot get same result
+    srand(time(NULL));
+    
+    int n , result = p -> data;
+    struct node *curr = p  ;
+    for(n=2; curr != NULL ; n++)
+    {
+        // probability 1/n
+        if( rand() % n == 0)
+        result = curr -> data ;
+        
+        curr = curr -> link ;
+        
+    }
+    
+    printf("%d",result);
+}
+
+int main()
+{
+   struct node *a = NULL;
+   push(&a, 5); 
+    push(&a, 20); 
+    push(&a, 4); 
+    push(&a, 3); 
+    push(&a, 30); 
+ 
+ 
+  Printrandom(a);
+  
+  return 0;
+}
