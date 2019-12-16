@@ -1,0 +1,82 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node
+{
+    int data;
+    struct node *link;
+};
+
+void display(struct node *p)
+{
+    while(p)
+    {
+        printf("%d ",p->data);
+        p=p->link;
+    }
+}
+
+void push(struct node **p,int data)
+{
+    struct node *temp = (struct node *)malloc(sizeof(struct node));
+    temp -> data = data; 
+    temp -> link = *p;
+    *p = temp;
+}
+
+void sort(struct node **p , struct node *newnode)
+{
+    if((*p) == NULL || (*p)->data >= newnode -> data)
+    {
+        newnode -> link = *p ;
+        *p = newnode ;
+    }
+    else
+    {
+     struct node *curr = *p ;
+     while(curr -> link != NULL && curr -> link -> data < newnode -> data)
+     curr = curr -> link ;
+     
+     newnode -> link = curr -> link ;  
+     curr -> link = newnode ; 
+    }
+}
+
+void insertionsort(struct node **p)
+{
+    struct node *sortedList = NULL ;
+    struct node *curr = *p ;
+    
+    while(curr != NULL)
+    {
+        //store next of current 
+        struct node *next = curr -> link ; 
+        
+        sort(&sortedList , curr);
+        
+        //update current 
+        curr = next ;
+    }
+    
+    *p = sortedList ;
+}
+
+int main()
+{
+   struct node *a = NULL;
+   push(&a, 5); 
+    push(&a, 20); 
+    push(&a, 4); 
+    push(&a, 3); 
+    push(&a, 30); 
+ 
+  display(a);
+  
+  printf("\nSorted list using Insertion Sort is\n");
+  insertionsort(&a);
+  
+  display(a);
+  
+    return 0;
+}
