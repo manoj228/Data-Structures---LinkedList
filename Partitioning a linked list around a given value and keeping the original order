@@ -1,0 +1,103 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+struct node
+{
+    int data;
+    struct node *link ;
+};
+
+struct node *push(int data)
+{
+    struct node *temp = (struct node *)malloc(sizeof(struct node));
+    temp -> data = data ;
+    temp -> link = NULL ;
+    
+    return temp ;
+}
+
+void display(struct node *t)
+{
+    while(t)
+    {
+        printf("%d ",t->data);
+        t = t -> link ;
+    }
+}
+
+struct node *order(struct node *head,int x)
+{
+    if(!head) 
+    return head;
+    
+    struct node *newhead = NULL , *lesshead = NULL , *less = NULL , *morehead = NULL , *more = NULL ;
+    
+    while(head)
+    {
+        if(head->data < x)
+        {
+            if(!lesshead)
+            {
+                lesshead = head;
+                less = lesshead;
+            }
+            else
+            {
+                less -> link = head ;
+                less = head;
+            }
+            
+        }
+        else
+        {
+            if(!morehead)
+            {
+                morehead = head ;
+                more = morehead ;
+            }
+            else
+            {
+                more -> link = head ;
+                more = head ;
+            }
+        }
+         
+        head = head -> link ;
+       
+    }
+   less -> link = NULL ; more -> link = NULL ;
+   
+    if(lesshead == NULL)
+    {
+        newhead = morehead ;
+        morehead -> link = NULL ;
+    }
+    else
+    {
+        newhead = lesshead ;
+        less -> link = morehead ;
+    
+    }
+    
+    
+    return newhead;
+}
+int main()
+{
+   struct node *a = push(1);
+   a -> link = push(4);
+   a -> link -> link = push(3);
+   a -> link -> link -> link = push(2);
+   a -> link -> link -> link -> link = push(5);
+   a -> link -> link -> link -> link -> link = push(2);
+   int x = 3;
+   
+   display(a);
+   
+   printf("\n");
+
+   struct node *new = order(a,3);
+   
+   display(new);
+    return 0;
+}
