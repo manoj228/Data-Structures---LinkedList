@@ -1,0 +1,107 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node
+{
+    int data;
+    struct node *link;
+};
+
+struct node *push(int data)
+{
+    struct node *t = (struct node *)malloc(sizeof(struct node));
+    t -> data = data;
+    t -> link = NULL ;
+    
+    return t ;
+}
+
+void display(struct node *a)
+{
+    while(a)
+    {
+        printf("%d ",a->data);
+        a = a-> link;
+    }
+}
+
+struct node *rotatehelper(struct node *blockhead,struct node *blocktail,
+                          int d,struct node **tail,int k)
+{
+  if(d==0)
+  return blockhead;
+  
+  //Rotate Clockwise
+  if(d>0)
+  {
+      struct node *temp = blockhead;
+      for(int i=1;i<k-1 && temp -> link -> link; i++)
+      temp = temp -> link ;
+      
+      blocktail -> link = blockhead;
+      *tail = temp;
+      return rotatehelper(blocktail,temp,d-1,tail,k);
+  }
+  
+  //Rotate anti Clockwise
+  if(d<0)
+  {
+      blocktail -> link = blockhead ;
+      *tail = blockhead;
+      return rotatehelper(blockhead->link,blockhead,d+1,tail,k);
+  }
+}
+
+struct node *rotateByblocks(struct node *head,int k,int d)
+{
+    if(head == NULL || head->link == NULL)
+    return head;
+    
+    if(d==0)
+    return head;
+    
+    struct node *temp = head , *tail = NULL ;
+    int i;
+    //traverse upto last element of the block
+    for(i=1; i<k && temp -> link ; i++)
+    temp = temp -> link ;
+    
+    //store first element of nextBlock
+    struct node *nextBlock = temp -> link ;
+    
+    if(i < k)
+    head = rotatehelper(head,temp,d%k,&tail,i);
+    else
+    head = rotatehelper(head,temp,d%k,&tail,k);
+    
+    tail -> link = rotateByblocks(nextBlock,k,d%k);
+    
+    return head;
+    
+}
+int main()
+{
+    struct node *a = push(1);
+    a ->link = push(2);
+    a -> link -> link = push(3);
+    a -> link -> link -> link = push(4);
+    a -> link -> link -> link -> link = push(5);
+    a -> link -> link -> link -> link -> link = push(6);
+    a -> link -> link -> link -> link -> link -> link = push(7);
+    a -> link -> link -> link -> link -> link -> link -> link = push(8);
+       a -> link -> link -> link -> link -> link -> link -> link -> link = push(9);
+    int k = 3,d=1;
+    
+    display(a);
+    
+    printf("\n");
+    
+    struct node *res = rotateByblocks(a,k,d);
+    
+    display(res);
+    
+    
+    return 0;
+}
+
