@@ -1,0 +1,111 @@
+//Quicksort
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node
+{
+    int data;
+    struct node *link , *prev;
+};
+
+void push(struct node **a,int data)
+{
+    struct node *temp = (struct node *)malloc(sizeof(struct node));
+    temp -> data = data;
+    temp -> link = (*a);
+    temp -> prev = NULL;
+    
+    if((*a) != NULL)
+    (*a) -> prev = temp;
+    
+    (*a) = temp;
+    
+}
+
+void display(struct node *a)
+{
+    while(a)
+    {
+        printf("%d ",a->data);
+        a = a->link;
+    }
+    printf("\n");
+}
+
+struct node* lastnode(struct node *p)
+{
+    while(p && p->link)
+    p = p -> link ;
+    
+    return p;
+}
+
+void swap(int *a,int *b)
+{
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
+struct node* partition(struct node *l,struct node *h)
+{
+    // pivot
+    int x = h->data ;
+   
+    // int i = (l-1) ;
+    struct node *i = l -> prev ;
+
+
+    //for(int j = l ;j <= h-1 ; j++)
+    for(struct node *j = l ; j != h ; j = j -> link)
+    { 
+        if(j -> data <= x)
+        {
+            // i ++ 
+            i = (i==NULL) ? l : i -> link ;
+           
+            swap(&(i->data) , &(j->data));
+        }
+    }
+    
+    // swap (&a[i+1],&p);
+    i = (i==NULL) ? l : i -> link ;
+    swap(&(i->data),&(h->data));
+    
+    return i;
+}
+
+void _quick(struct node *l,struct node *h)
+{
+    if(l != h && l != h->link && h != NULL)
+    {
+        struct node *p = partition(l,h);
+        
+        _quick(l,p->prev);
+        _quick(p->link,h);
+    }
+}
+
+void quicksort(struct node *a)
+{
+    struct node *last = lastnode(a);
+    
+    _quick(a,last);
+}
+int main()
+{
+    struct node *a = NULL ;
+    
+   	push(&a, 5); 
+	push(&a, 20); 
+	push(&a, 4); 
+	push(&a, 3); 
+	push(&a, 30); 
+    
+    display(a);
+    
+   quicksort(a);
+    
+    display(a);
+
+    return 0;
+}
