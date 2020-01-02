@@ -1,0 +1,86 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node
+{
+    int data;
+    struct node *link,*prev;
+};
+
+void push(struct node **head,int data)
+{
+    struct node *temp = (struct node *)malloc(sizeof(struct node));
+    temp -> data = data;
+    temp -> link = (*head);
+    temp -> prev = NULL;
+    
+    if((*head) != NULL)
+    (*head) -> prev = temp;
+    
+    (*head) = temp;
+}
+
+void display(struct node *a)
+{
+     struct node *last;
+    printf("Output in forward direction :");
+    while(a!=NULL)
+    {
+        printf("%d ",a->data);
+        last = a;
+        a = a->link;
+    }
+    printf("\n");
+    
+    printf("Output in reverse direction :");
+    while(last !=NULL)
+    {
+        printf("%d ",last->data);
+        last = last->prev;
+    }
+    
+}
+void append(struct node **head,int data)
+{
+    struct node *p = (*head);
+    struct node *temp = (struct node *)malloc(sizeof(struct node));
+    temp ->data = data;
+    temp ->link = NULL;
+    temp -> prev = *head;
+    
+    while( p -> link !=NULL)
+     p = p-> link ;
+     
+     p ->link = temp; 
+     temp -> prev = p;
+    
+}
+
+void insertAfter(struct node *prevnode,int data)
+{
+    struct node *temp = (struct node *)malloc(sizeof(struct node));
+    temp ->data = data;
+    temp -> link = prevnode -> link ;
+    prevnode -> link = temp; 
+    temp -> prev = prevnode;
+    
+    if(temp -> link != NULL)
+    {
+        temp -> link -> prev = temp;
+    }
+}
+
+int main()
+{
+   struct node *head = NULL;
+   
+   push(&head,1);
+   push(&head,2);
+   append(&head,3);
+   insertAfter(head->link,4);
+   
+   display(head);
+
+    return 0;
+}
