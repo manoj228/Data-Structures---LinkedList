@@ -1,0 +1,55 @@
+You are given a doubly linked list which in addition to the next and previous pointers, 
+it could have a child pointer, which may or may not point to a separate doubly linked list. These child lists may have one or more children of their own, and so on, 
+to produce a multilevel data structure, as shown in the example below.
+
+Flatten the list so that all the nodes appear in a single-level, doubly linked list. You are given the head of the first level of the list.
+
+// Time complexity : O(N)
+// Space complexity : O(1)
+
+Example 1:
+
+Input: head = [1,2,3,4,5,6,null,null,null,7,8,9,10,null,null,11,12]
+Output: [1,2,3,7,8,11,12,9,10,4,5,6]
+
+
+class Solution {
+public:
+    Node* flatten(Node* head) {
+        if(!head) return NULL;
+        
+        Node *cur = head;
+        
+        while(cur)
+        {
+            // if child exist
+            if(cur -> child)
+            {
+                // mark next node
+                Node *next = cur -> next;
+                
+                // make cur -> next to its child and prev
+                cur -> next = cur -> child;
+                cur -> next -> prev = cur;
+                
+                // make child as null
+                cur -> child = NULL;
+                
+                // now , we need to traverse the linked child node to get the last node
+                Node *temp = cur -> next;
+                
+                while(temp -> next) temp = temp -> next;
+                
+                // once we found last node, link it with next node (we marked as initially)
+                temp -> next = next;
+                
+                // if next is not null, then link its prev
+                if(next) next -> prev = temp;
+            }
+            
+            cur = cur -> next;
+        }
+        
+        return head;
+    }
+};
